@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import fetch from 'node-fetch'; // install this if not present: `npm i node-fetch`
+import fetch from 'node-fetch'; // install: npm i node-fetch@2
 
 dotenv.config();
 const app = express();
@@ -15,15 +15,19 @@ const HUGGINGFACE_API_TOKEN = process.env.HUGGINGFACE_API_TOKEN;
 app.post('/ask', async (req, res) => {
   const { message } = req.body;
 
+  if (!message) {
+    return res.status(400).json({ reply: 'No message provided.' });
+  }
+
   try {
-    const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium', {
+    const response = await fetch('https://api-inference.huggingface.co/models/microsoft/dialogpt-medium', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${HUGGINGFACE_API_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        inputs: { text: message }
+        inputs: message
       }),
     });
 
@@ -34,9 +38,9 @@ app.post('/ask', async (req, res) => {
     }
 
     const data = await response.json();
-
-    const reply = data.generated_text || data[0]?.generated_text || "Sorry, no response.";
+    const reply = data.generated_text || data[0]?.generated_text || "Sorry, no response received.";
     res.json({ reply });
+
   } catch (err) {
     console.error('Server error:', err);
     res.status(500).json({ reply: "Sorry, something went wrong on the server." });
@@ -50,3 +54,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
