@@ -20,7 +20,7 @@ app.post('/ask', async (req, res) => {
   }
 
   try {
-    const response = await fetch('https://api-inference.huggingface.co/models/microsoft/dialogpt-medium', {
+    const response = await fetch('https://api-inference.huggingface.co/models/facebook/blenderbot_small-90M', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${HUGGINGFACE_API_TOKEN}`,
@@ -33,12 +33,12 @@ app.post('/ask', async (req, res) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Hugging Face API error:', errorText);
-      return res.status(500).json({ reply: 'Error from Hugging Face API' });
+      console.error('🔴 Hugging Face API error:', response.status, errorText);
+      return res.status(500).json({ reply: `Hugging Face API Error ${response.status}` });
     }
 
     const data = await response.json();
-    const reply = data.generated_text || data[0]?.generated_text || "Sorry, no response received.";
+    const reply = data.generated_text || 'Sorry, no response received.';
     res.json({ reply });
 
   } catch (err) {
@@ -54,4 +54,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
-
