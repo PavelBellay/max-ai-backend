@@ -20,7 +20,7 @@ app.post('/ask', async (req, res) => {
   }
 
   try {
-    const response = await fetch('https://api-inference.huggingface.co/models/facebook/blenderbot_small-90M', {
+    const response = await fetch('https://huggingface.co/microsoft/DialoGPT-small', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${HUGGINGFACE_API_TOKEN}`,
