@@ -20,7 +20,7 @@ app.post('/ask', async (req, res) => {
   }
 
   try {
-    const response = await fetch('https://huggingface.co/microsoft/DialoGPT-small', {
+    const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-small', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${HUGGINGFACE_API_TOKEN}`,
